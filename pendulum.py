@@ -16,6 +16,18 @@ def exploit_or_explore():
         action = np.random.randint(0, env.action_space.n)
     return action
 
+def random_action():    
+    return np.random.randint(0, env.action_space.n)
+
+def actoion_according_to_heuristics(state):
+    if state[2] < 0:
+        # leaning to the left then push cart to the left
+        action = 0
+    else:
+        # leaning to the right then push cart to the right
+        action = 1
+    return action
+
 def adjust_exploration_coefficient(epsilon, episode):
     if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
         epsilon -= epsilon_decay_value
@@ -83,6 +95,8 @@ for episode in range(EPISODES):
         # 1: Push cart to the right
         
         action = exploit_or_explore()
+        # action = random_action()
+        # action = actoion_according_to_heuristics(discrete_state)
         # print("Action: " + str(action))
         
         # Observation:
@@ -138,7 +152,8 @@ for episode in range(EPISODES):
         print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, current epsilon: {epsilon:>1.2f}')
     
     if episode % 10 == 0:
-        np.save(f"qtables/{episode}-qtable.npy", q_table)
+        pass
+        # np.save(f"qtables/{episode}-qtable.npy", q_table)
         
     end_time = time.time()
     print("Episode" + str(episode_counter) + "time: " + str(end_time - start_time))
@@ -151,4 +166,3 @@ plt.legend(loc=4)
 plt.show()
 
 env.close()
-
