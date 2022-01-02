@@ -39,7 +39,7 @@ class CartPoleAgent():
         else:
             return np.argmax(self.q_table[state])
 
-    def update_sarsa(self, state, action, reward, new_state, new_action):
+    def update_q(self, state, action, reward, new_state, new_action):
         self.q_table[state][action] += self.learning_rate * (reward + self.discount * (self.q_table[new_state][new_action]) - self.q_table[state][action])
 
     def get_epsilon(self, t):
@@ -63,7 +63,7 @@ class CartPoleAgent():
                 reward_sum += reward
                 new_state = self.discretize_state(obs)
                 new_action = self.choose_action(new_state)
-                self.update_sarsa(current_state, action, reward, new_state, new_action)
+                self.update_q(current_state, action, reward, new_state, new_action)
                 current_state = new_state
 
             aggr_ep_rewards['ep'].append(e)
