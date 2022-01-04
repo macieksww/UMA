@@ -8,13 +8,14 @@ ep_rewards = []
 aggr_ep_rewards = {'ep': [], 'avg': [], 'max': [], 'min': []}
 
 class CartPoleAgent():
-    def __init__(self, buckets=(1, 3, 6, 12), num_episodes=25000, min_lr=0.1, min_epsilon=0.1, discount=0.98, decay=25):
+    def __init__(self, buckets=(3, 6, 3, 6), num_episodes=2000, min_lr=0.1, min_epsilon=0.1, discount=0.98, decay=25, alpha=0.9):
         self.buckets = buckets
         self.num_episodes = num_episodes
         self.min_lr = min_lr
         self.min_epsilon = min_epsilon
         self.discount = discount
         self.decay = decay
+        self.alpha = alpha
         self.episode_counter = 0
         self.actions = (0, 1)
         self.list_of_visited_states_actions = []
@@ -46,13 +47,16 @@ class CartPoleAgent():
             return np.argmax(self.q_table[state])
 
     def update_monte_carlo(self, episode_reward_sum):
+        it = 1
         for state_action in self.list_of_visited_states_actions:
-            print('Visited states: ' + str(len(self.list_of_visited_states_actions)))
             state = state_action[0]
             action = state_action[1]
-            self.q_rewards_sum_table[state][action] += episode_reward_sum
-            self.q_table[state][action] = self.q_rewards_sum_table[state][action]/self.q_visits_table[state][action]
-            self.list_of_visited_states_actions.clear()
+            state_visits = self.q_visits_table[state][action]
+            discounted_reward = episode_reward_sum * self.learning_rate**(it)
+            old_q_table = self.q_table[state][action]
+            self.q_table[state][action] = old_q_table + 1/state_visits*(discounted_reward-old_q_table)
+            it += 1
+        self.list_of_visited_states_actions.clear()
             
     def get_epsilon(self, t):
         return max(self.min_epsilon, min(1., 1. - math.log10((t + 1) / self.decay)))
@@ -63,8 +67,7 @@ class CartPoleAgent():
     def train(self):
         for e in range(self.num_episodes):
             current_state = self.discretize_state(self.env.reset())
-
-            self.learning_rate = self.get_learning_rate(e)
+            self.learning_rate = 0.97
             self.epsilon = self.get_epsilon(e)
             done = False
             episode_reward_sum = 0
@@ -72,8 +75,7 @@ class CartPoleAgent():
             while not done:
                 action = self.choose_action(current_state)
                 self.q_visits_table[current_state][action] += 1
-                state_action = tuple((current_state, action))
-                self.list_of_visited_states_actions.append(state_action)
+                self.list_of_visited_states_actions.append((current_state, action))
                 obs, reward, done, _ = self.env.step(action)
                 episode_reward_sum += reward
                 new_state = self.discretize_state(obs)
@@ -87,7 +89,7 @@ class CartPoleAgent():
             
             self.update_monte_carlo(episode_reward_sum)
             self.episode_counter += 1
-            # print('Episode: ' + str(self.episode_counter))
+            print('Episode: ' + str(self.episode_counter))
             
         print('Finished training!')            
 
