@@ -8,13 +8,14 @@ ep_rewards = []
 aggr_ep_rewards = {'ep': [], 'avg': [], 'max': [], 'min': []}
 
 class CartPoleAgent():
-    def __init__(self, buckets=(1, 1, 6, 12), num_episodes=10000, min_lr=0.1, min_epsilon=0.1, discount=0.98, decay=25):
+    def __init__(self, buckets=(6, 12, 6, 12), num_episodes=200000, min_lr=0.1, min_epsilon=0.1, discount=0.98, decay=25):
         self.buckets = buckets
         self.num_episodes = num_episodes
         self.min_lr = min_lr
         self.min_epsilon = min_epsilon
         self.discount = discount
         self.decay = decay
+        self.episode_counter = 0
 
         self.env = gym.make('CartPole-v0')
 
@@ -71,6 +72,9 @@ class CartPoleAgent():
             aggr_ep_rewards['avg'].append(np.mean(ep_rewards))
             aggr_ep_rewards['min'].append(min(ep_rewards))
             aggr_ep_rewards['max'].append(max(ep_rewards))
+            
+            self.episode_counter += 1
+            print('Episode: ' + str(self.episode_counter))
             
         print('Finished training!')            
 
