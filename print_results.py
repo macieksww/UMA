@@ -25,45 +25,43 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
     if avg == True:
         # avg reward in the last 100 episodes
         for index in range(len(episodes)):
+            # avg reward till ceratian episod
             avg_r.append(np.mean(rewards[0:index]))
-            # if index == 1:
-            #     avg_r.append(rewards[0])
-            # elif index < 99 and index > 1:
+            
+            # # avg reward in the last 100 episodes
+            # if index < 99:
             #     avg_r.append(np.mean(rewards[0:index]))
             # else:
             #     avg_r.append(np.mean(rewards[-100:]))
         plt.plot(episodes, avg_r, label='avg')
     if maximum == True:
-        # max reward in the last 100 episodes
         for index in range(len(episodes)):
             index += 1
+            # max reward till ceratian episod
             max_r.append(max(rewards[0:index]))
-            # if index == 1:
-            #     max_r.append(rewards[0])
-            # elif index < 99 and index > 1:
+            
+            # # min reward in the last 100 episodes
+            # if index < 100:
             #     max_r.append(np.max(rewards[0:index]))
             # else:
             #     max_r.append(np.max(rewards[-100:]))
         plt.plot(episodes, max_r, label='max')
     if minimum == True:
-        # max reward in the last 100 episodes
         for index in range(len(episodes)):
             index += 1
+            # max reward till ceratian episod
             min_r.append(min(rewards[0:index]))
-            # if index == 1:
-            #     min_r.append(rewards[0])
-            # elif index < 99 and index > 1:
+            
+            # # max reward in the last 100 episodes
+            # if index < 100:
             #     min_r.append(np.min(rewards[0:index]))
             # else:
             #     min_r.append(np.min(rewards[-100:]))
         plt.plot(episodes, min_r, label='min')
                 
-    
-    
-    
     plt.legend()
     plt.show()
             
         
-plot_stats('sarsa_612612_ep_2000.csv', True, False)  
+plot_stats('sarsa_612612_ep_2000.csv', True)  
     
