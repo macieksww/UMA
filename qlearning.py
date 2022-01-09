@@ -1,14 +1,13 @@
 import gym
 import numpy as np
 import math
-import matplotlib.pyplot as plt
+import csv
 
 # containers for statistics data
-ep_rewards = []
-aggr_ep_rewards = {'ep': [], 'avg': [], 'max': [], 'min': []}
+aggr_ep_rewards = {'ep': [], 'reward': []}
 
 class CartPoleQAgent():
-    def __init__(self, buckets=(1, 3, 6, 12), num_episodes=10000, min_lr=0.1, min_epsilon=0.1, discount=1.0, decay=25):
+    def __init__(self, buckets=(3, 6, 3, 6), num_episodes=1000, min_lr=0.1, min_epsilon=0.1, discount=1.0, decay=25):
         self.buckets = buckets
         self.num_episodes = num_episodes
         self.min_lr = min_lr
@@ -49,41 +48,38 @@ class CartPoleQAgent():
     def get_learning_rate(self, t):
         return max(self.min_lr, min(1., 1. - math.log10((t + 1) / self.decay)))
 
-    def train(self):
+    def train(self, result_file_name):
         for e in range(self.num_episodes):
             current_state = self.discretize_state(self.env.reset())
 
             self.learning_rate = self.get_learning_rate(e)
             self.epsilon = self.get_epsilon(e)
             done = False
-
-            reward_sum = 0
+            episode_reward_sum = 0
+            
             while not done:
                 action = self.choose_action(current_state)
                 obs, reward, done, _ = self.env.step(action)
-                reward_sum += reward
+                episode_reward_sum += reward
                 new_state = self.discretize_state(obs)
                 self.update_q(current_state, action, reward, new_state)                            
                 current_state = new_state
 
             aggr_ep_rewards['ep'].append(e)
-            ep_rewards.append(reward_sum)
-            aggr_ep_rewards['avg'].append(np.mean(ep_rewards))
-            aggr_ep_rewards['min'].append(min(ep_rewards))
-            aggr_ep_rewards['max'].append(max(ep_rewards))
+            aggr_ep_rewards['reward'].append(episode_reward_sum)
             
             self.episode_counter += 1
             print('Episode: ' + str(self.episode_counter))
         
+        #saving results to csv file
+        with open('ql_'+str(self.buckets[0])+str(self.buckets[1])+str(self.buckets[2])+str(self.buckets[3])+'_ep_'+str(self.num_episodes)+'.csv', 'w', newline='') as result_file:
+            result_writer = csv.writer(result_file, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)            
+            for e, r in zip(aggr_ep_rewards['ep'], aggr_ep_rewards['reward']):
+                result_writer.writerow([e, r])
+                
         print('Finished training!')
 
 
 if __name__ == "__main__":
     agent = CartPoleQAgent()
-    agent.train()
-    plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['avg'], label="cummulative reward")
-    plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['max'], label="max rewards")
-    plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['min'], label="min rewards")
-    plt.legend(loc=4)
-    plt.show()
-    
+    agent.train('ql_b14812_ep2000_lr01_eps01_d1_d100.csv')
