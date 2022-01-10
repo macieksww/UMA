@@ -33,7 +33,7 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
                 avg_r.append(np.mean(rewards[0:index]))
             else:
                 avg_r.append(np.mean((rewards[0:index])[-100:]))
-        plt.plot(episodes, avg_r, label='avg')
+        plt.plot(episodes, avg_r, '#fab300', label='avg')
     if maximum == True:
         for index in range(len(episodes)):
             index += 1
@@ -45,7 +45,7 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
                 max_r.append(np.max(rewards[0:index]))
             else:
                 max_r.append(np.max((rewards[0:index])[-100:]))
-        plt.plot(episodes, max_r, label='max')
+        plt.plot(episodes, max_r, '#eb4034', label='max')
     if minimum == True:
         for index in range(len(episodes)):
             index += 1
@@ -57,7 +57,7 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
                 min_r.append(np.min(rewards[0:index]))
             else:
                 min_r.append(np.min((rewards[0:index])[-100:]))
-        plt.plot(episodes, min_r, label='min')
+        plt.plot(episodes, min_r, '#34a8eb', label='min')
                 
     print(avg_r[-1])
     plt.legend()
@@ -70,5 +70,6 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
 # plot_stats('td_3636_ep_1000_lr_01_e_01_d_095_d_25.csv', True)
 # plot_stats('td_3636_ep_2000_lr_01_e_01_d_095_d_25.csv', True)
 # plot_stats('sarsa_3636_ep_50000_lr_001_e_01_d_09_d_10.csv', True)
-plot_stats('sarsa_3636_ep_1000_lr_1_e_01_d_09_d_10.csv', True)
+# plot_stats('sarsa_3636_ep_1000_lr_1_e_01_d_09_d_10.csv', True)
+plot_stats('sarsa_11612_ep_1000_lr_01_e_01_d_098_d_25.csv')
     
