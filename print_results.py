@@ -1,6 +1,8 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+
 
 def read_result_file(file_name):
     with open(file_name) as result_file:
@@ -13,6 +15,26 @@ def read_result_file(file_name):
             episodes.append(float(row[0]))
             rewards.append(float(row[1]))
         return episodes, rewards
+    
+def get_learning_rate_epsolon(min_val, decay):
+    values = []
+    
+    for t in range(1000):
+        values.append(max(min_val, min(1., 1. - math.log10((t + 1) / decay))))
+    
+    return values
+
+def plot_learning_rate_epsolon_characteristics(min_vals, decays):
+    
+    for i in range (min(len(min_vals), len(decays))):
+        values = get_learning_rate_epsolon(min_vals[i], decays[i])
+        plt.plot(values, label="decay="+str(decays[i]))
+
+    plt.ylabel("wartość współczynnika")
+    plt.xlabel("epizody")
+    plt.legend()
+    plt.show()
+
 
 def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
     episodes, rewards = read_result_file(file_name)
@@ -25,14 +47,14 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
     if avg == True:
         # avg reward in the last 100 episodes
         for index in range(len(episodes)):
-            # # avg reward till ceratian episod
-            # avg_r.append(np.mean(rewards[0:index]))
+            # avg reward till ceratian episod
+            avg_r.append(np.mean(rewards[0:index]))
             
-            # avg reward in the last 100 episodes
-            if index < 99:
-                avg_r.append(np.mean(rewards[0:index]))
-            else:
-                avg_r.append(np.mean((rewards[0:index])[-100:]))
+            # # avg reward in the last 100 episodes
+            # if index < 99:
+            #     avg_r.append(np.mean(rewards[0:index]))
+            # else:
+            #     avg_r.append(np.mean((rewards[0:index])[-100:]))
         plt.plot(episodes, avg_r, '#fab300', label='avg')
     if maximum == True:
         for index in range(len(episodes)):
@@ -59,17 +81,12 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
                 min_r.append(np.min((rewards[0:index])[-100:]))
         plt.plot(episodes, min_r, '#34a8eb', label='min')
                 
-    print(avg_r[-1])
+    plt.title("Learning rate= Epsiolon= Discount= Decay=")
     plt.legend()
     plt.show()
+    print(avg_r[-1])
             
-        
-# plot_stats('sarsa_3636_ep_1000_lr_01_e_01_d_095_d_25.csv', True)  
-# plot_stats('sarsa_3636_ep_1000_lr_01_e_01_d_095_d_10.csv', True)  
-# plot_stats('sarsa_3636_ep_1000_lr_01_e_01_d_095_d_1.csv', True)  
-# plot_stats('td_3636_ep_1000_lr_01_e_01_d_095_d_25.csv', True)
-# plot_stats('td_3636_ep_2000_lr_01_e_01_d_095_d_25.csv', True)
-# plot_stats('sarsa_3636_ep_50000_lr_001_e_01_d_09_d_10.csv', True)
-# plot_stats('sarsa_3636_ep_1000_lr_1_e_01_d_09_d_10.csv', True)
-plot_stats('sarsa_11612_ep_1000_lr_01_e_01_d_098_d_25.csv')
+
+plot_stats('sarsa_3636_ep_50000_lr_1_e_01_d_09_d_200.csv')
+plot_learning_rate_epsolon_characteristics([0.1, 0.1, 0.1], [25, 50, 100])
     
