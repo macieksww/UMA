@@ -16,7 +16,7 @@ def read_result_file(file_name):
             rewards.append(float(row[1]))
         return episodes, rewards
     
-def get_learning_rate_epsolon(min_val, decay):
+def get_learning_rate_epsilon(min_val, decay):
     values = []
     
     for t in range(1000):
@@ -48,13 +48,13 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
         # avg reward in the last 100 episodes
         for index in range(len(episodes)):
             # avg reward till ceratian episod
-            avg_r.append(np.mean(rewards[0:index]))
+            # avg_r.append(np.mean(rewards[0:index]))
             
-            # # avg reward in the last 100 episodes
-            # if index < 99:
-            #     avg_r.append(np.mean(rewards[0:index]))
-            # else:
-            #     avg_r.append(np.mean((rewards[0:index])[-100:]))
+            # avg reward in the last 100 episodes
+            if index < 99:
+                avg_r.append(np.mean(rewards[0:index]))
+            else:
+                avg_r.append(np.mean((rewards[0:index])[-100:]))
         plt.plot(episodes, avg_r, '#fab300', label='avg')
     if maximum == True:
         for index in range(len(episodes)):
@@ -81,12 +81,20 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
                 min_r.append(np.min((rewards[0:index])[-100:]))
         plt.plot(episodes, min_r, '#34a8eb', label='min')
                 
-    plt.title("Learning rate= Epsiolon= Discount= Decay=")
+    # plt.title("Learning rate= Epsiolon= Discount= Decay=")
     plt.legend()
+    plt.xlabel("epizody")
+    plt.ylabel("wartość nagrody")
     plt.show()
     print(avg_r[-1])
             
+            
+##najleosze
+plot_stats('sarsa_14812_ep_10000_lr_01_e_01_d_098_d_25.csv')
+# plot_stats('sarsa_11612_ep_5000_lr_01_e_1_d_098_d_25.csv')
 
-plot_stats('sarsa_3636_ep_50000_lr_1_e_01_d_09_d_200.csv')
-plot_learning_rate_epsolon_characteristics([0.1, 0.1, 0.1], [25, 50, 100])
+
+# plot_stats('sarsa_11612_ep_5000_lr_01_e_01_d_098_d_100.csv')
+# plot_stats('sarsa_11612_ep_5000_lr_01_e_1_d_098_d_25.csv')
+# plot_learning_rate_epsilon_characteristics([0.1, 0.1, 0.1], [25, 50, 100])
     
