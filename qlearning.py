@@ -48,7 +48,7 @@ class CartPoleQAgent():
     def get_learning_rate(self, t):
         return max(self.min_lr, min(1., 1. - math.log10((t + 1) / self.decay)))
 
-    def train(self, result_file_name):
+    def train(self):
         for e in range(self.num_episodes):
             current_state = self.discretize_state(self.env.reset())
 
@@ -82,4 +82,4 @@ class CartPoleQAgent():
 
 if __name__ == "__main__":
     agent = CartPoleQAgent()
-    agent.train('ql_b14812_ep2000_lr01_eps01_d1_d100.csv')
+    agent.train()
