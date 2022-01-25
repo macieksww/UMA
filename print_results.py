@@ -89,12 +89,7 @@ def plot_stats(file_name, r=False, avg=True, maximum=True, minimum=True):
     print(avg_r[-1])
             
             
-##najleosze
+##command example
 plot_stats('sarsa_14812_ep_10000_lr_01_e_01_d_098_d_25.csv')
-# plot_stats('sarsa_11612_ep_5000_lr_01_e_1_d_098_d_25.csv')
 
-
-# plot_stats('sarsa_11612_ep_5000_lr_01_e_01_d_098_d_100.csv')
-# plot_stats('sarsa_11612_ep_5000_lr_01_e_1_d_098_d_25.csv')
-# plot_learning_rate_epsilon_characteristics([0.1, 0.1, 0.1], [25, 50, 100])
     
